@@ -51,7 +51,7 @@ public_users.get('/title/:title',function (req, res) {
 
   // Iterate over the 'books' object
   Object.keys(books).forEach((key) => {
-    if (books[key].title === tilte) {
+    if (books[key].title === title) {
       result.push(books[key]);        // Add the book to the result array if author matches
     }
   });
