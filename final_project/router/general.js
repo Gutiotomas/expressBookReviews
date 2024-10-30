@@ -70,16 +70,70 @@ public_users.get('/', async (req, res) => {
   //Write your code here
  // res.send(JSON.stringify(books,null,3));
 //});
+public_users.get('/books/:isbn', (req, res) => {
+  const isbn = req.params.isbn;
+
+  // Check if the book exists with the given ISBN
+  if (books[isbn]) {
+    res.json(books[isbn]); // Return the book details
+  } else {
+    res.status(404).json({ message: "Book not found" });
+  }
+});
+public_users.get('/isbn/:isbn', async (req, res) => {
+  const isbn = req.params.isbn;
+
+  try {
+    // Make an API call to fetch book details using ISBN
+    const response = await axios.get(`http://localhost:5000/books/${isbn}`);
+    res.json(response.data); // Send the fetched book details as response
+  } catch (error) {
+    console.error("Error fetching book details:", error);
+    res.status(404).json({ message: "Book not found" });
+  }
+});
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+//public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  const isbn = req.params.isbn;
-    res.send(books[isbn]);
- });
-  
+  //const isbn = req.params.isbn;
+    //res.send(books[isbn]);
+ //});
+
+public_users.get('/books/author/:author', (req, res) => {
+  const author = req.params.author;
+  let result = [];
+
+  // Iterate over books and check if the author matches
+  Object.keys(books).forEach((key) => {
+    if (books[key].author.toLowerCase() === author.toLowerCase()) {
+      result.push(books[key]); // Add the book to the result array if author matches
+    }
+  });
+
+  // Check if any books were found
+  if (result.length > 0) {
+    res.json(result); // Send the result array as a response
+  } else {
+    res.status(404).json({ message: "Author not found" });
+  }
+});
+
+public_users.get('/author/:author', async (req, res) => {
+  const author = req.params.author;
+
+  try {
+    // Make an API call to fetch books by author
+    const response = await axios.get(`http://localhost:5000/books/author/${author}`);
+    res.json(response.data); // Send the fetched books as response
+  } catch (error) {
+    console.error("Error fetching books by author:", error);
+    res.status(404).json({ message: "Books not found for the given author" });
+  }
+});
+
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+/*public_users.get('/author/:author',function (req, res) {
   //Write your code here
   const author = req.params.author;   // Get the author from request parameters
   let result = [];                    // Array to store books by the given author
@@ -96,10 +150,12 @@ public_users.get('/author/:author',function (req, res) {
   } else {
     res.status(404).send({ error: "No books found for the specified author" });  // Handle case where no books are found
   }
-});
+});*/
+
+
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+/*public_users.get('/title/:title',function (req, res) {
   //Write your code here
   const title = req.params.title;   // Get the author from request parameters
   let result = [];                    // Array to store books by the given author
@@ -116,7 +172,7 @@ public_users.get('/title/:title',function (req, res) {
   } else {
     res.status(404).send({ error: "No books found for the specified title" });  // Handle case where no books are found
   }
-});
+});*/
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
