@@ -152,7 +152,37 @@ public_users.get('/author/:author', async (req, res) => {
   }
 });*/
 
+public_users.get('/books/title/:title', (req, res) => {
+  const title = req.params.title;
+  let result = [];
 
+  // Iterate over books and check if the author matches
+  Object.keys(books).forEach((key) => {
+    if (books[key].title.toLowerCase() === title.toLowerCase()) {
+      result.push(books[key]); // Add the book to the result array if author matches
+    }
+  });
+
+  // Check if any books were found
+  if (result.length > 0) {
+    res.json(result); // Send the result array as a response
+  } else {
+    res.status(404).json({ message: "Book not found" });
+  }
+});
+
+public_users.get('/title/:title', async (req, res) => {
+  const title = req.params.title;
+
+  try {
+    // Make an API call to fetch books by author
+    const response = await axios.get(`http://localhost:5000/books/title/${title}`);
+    res.json(response.data); // Send the fetched books as response
+  } catch (error) {
+    console.error("Error fetching books by title:", error);
+    res.status(404).json({ message: "Book not found for the given title" });
+  }
+});
 
 // Get all books based on title
 /*public_users.get('/title/:title',function (req, res) {
